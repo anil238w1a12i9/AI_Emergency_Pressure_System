@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Emergency Pressure Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        let chart;
+
+        async function runPrediction() {
+
+            const accident_count = parseInt(document.getElementById("accident").value);
+            const rainfall = parseFloat(document.getElementById("rainfall").value);
+            const temperature = parseFloat(document.getElementById("temperature").value);
+            const festival = document.getElementById("festival").checked ? 1 : 0;
+            const location = parseInt(document.getElementById("location").value);
+            const dateInput = document.getElementById("date").value;
+
+            const date = new Date(dateInput);
+            const day = date.getDate();
+            const month = date.getMonth() + 1;
+
+            const response = await fetch("http://127.0.0.1:8000/predict", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    accident_count,
+                    rainfall,
+                    temperature,
+                    festival,
+                    day,
+                    month,
+                    location
+                })
+            });
+
+            const data = await response.json();
+
+            document.getElementById("result").innerText =
+                "Predicted Load: " + data.predicted_load +
+                " | Alert: " + data.alert_status;
+
+            updateChart(data.predicted_load);
+        }
+
+        function updateChart(value) {
+
+            const ctx = document.getElementById("loadChart").getContext("2d");
+
+            if (chart) {
+                chart.destroy();
+            }
+
+            chart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: ["Predicted Ambulance Load"],
+                    datasets: [{
+                        label: "Load",
+                        data: [value],
+                        backgroundColor: ["rgba(54, 162, 235, 0.6)"]
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+
+<h2>AI Emergency Pressure Dashboard</h2>
+
+<label>Accident Count:</label>
+<input type="number" id="accident"><br><br>
+
+<label>Rainfall:</label>
+<input type="number" id="rainfall"><br><br>
+
+<label>Temperature:</label>
+<input type="number" id="temperature"><br><br>
+
+<label>Festival:</label>
+<input type="checkbox" id="festival"><br><br>
+
+<label>Location (Zone code number):</label>
+<input type="number" id="location"><br><br>
+
+<label>Date:</label>
+<input type="date" id="date"><br><br>
+
+<button onclick="runPrediction()">Predict</button>
+
+<h3 id="result"></h3>
+
+<canvas id="loadChart" width="400" height="200"></canvas>
+
+</body>
+</html>
