@@ -110,3 +110,42 @@ http://127.0.0.1:8000/docs
 Open dashboard:
 
 frontend/dashboard.html
+
+##Phase 3##
+# AI Emergency Pressure & Ambulance Load Prediction System
+
+## Overview
+This system predicts emergency pressure and ambulance load using historical accident data.
+
+## Features
+- Multi-dataset integration
+- Alert classification system
+- Secure file validation
+- Logging system
+- Production-ready structure
+
+## Project Structure
+- services/ → Data loading
+- models/ → Prediction logic
+- alerts/ → Alert generation
+- data/ → CSV datasets
+- frontend/ → Dashboard UI
+
+## How to Run
+
+1. Install requirements:
+   pip install pandas
+
+2. Run:
+   python main.py
+
+## Security Improvements
+- File validation
+- Error logging
+- Exception handling
+
+## Future Scope
+- Real-time API integration
+- Deployment on cloud
+- Advanced ML model integration
+
